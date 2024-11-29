@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: bitnami/mysql:latest
+    container_name: mysql-PSP_proyecto
+    restart: always
+    environment:
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=12345Abcde
+      - MYSQL_DATABASE=PSP_proyecto
+    ports:
+      - "33060:3306"
+    volumes:
+      - mysql_data:/bitnami/mysql
+    networks:
+      - mysql_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  mysql_network:
+    driver: bridge
