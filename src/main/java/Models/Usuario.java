@@ -22,8 +22,8 @@ public class Usuario implements Serializable {
     private String apellido;
     @Column(name = "email")
     private String email;
-    @Column(name = "usuario")
-    private String usuario;
+    @Column(name = "usuario", unique = true)
+    private String username;
     @Column(name = "password")
     private byte[] password;
 
@@ -35,12 +35,12 @@ public class Usuario implements Serializable {
 
 
     //region Constructors
-    public Usuario(Long codigoEmple, String nombre, String apellido, String email, String usuario, byte[] password, KeyPair llaves, List<Incidencia> incidencias) {
+    public Usuario(Long codigoEmple, String nombre, String apellido, String email, String username, byte[] password, KeyPair llaves, List<Incidencia> incidencias) {
         this.codigoEmple = codigoEmple;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
-        this.usuario = usuario;
+        this.username = username;
         this.password = password;
         this.llaves = llaves;
         this.incidencias = incidencias;
@@ -83,12 +83,12 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setUsername(String usuario) {
+        this.username = usuario;
     }
 
     public byte[] getPassword() {
