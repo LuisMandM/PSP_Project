@@ -3,10 +3,11 @@ package Models;
 import jakarta.persistence.*;
 
 import javax.crypto.SecretKey;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "Incidencia")
-public class Incidencia {
+public class Incidencia implements Serializable {
 
     @Id
     @Column(name = "codIncidencia")

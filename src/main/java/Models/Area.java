@@ -2,6 +2,7 @@ package Models;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Area")
-public class Area {
+public class Area implements Serializable {
     @Id
     @Column(name = "codigo")
     private Long codigo;
