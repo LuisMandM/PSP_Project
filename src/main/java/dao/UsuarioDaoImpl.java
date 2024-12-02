@@ -1,14 +1,11 @@
 package dao;
 
-import Models.Incidencia;
 import Models.Usuario;
 import iDAO.IUsuarioDao;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UsuarioDaoImpl extends Dao<Usuario, String> implements IUsuarioDao {
     @Override
@@ -19,6 +16,7 @@ public class UsuarioDaoImpl extends Dao<Usuario, String> implements IUsuarioDao 
         return usuario;
     }
 
+    @Override
     public Usuario findByUsername(String input) throws SQLException {
 
         Usuario result = null;
