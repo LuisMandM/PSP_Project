@@ -2,7 +2,6 @@ package Models;
 
 import jakarta.persistence.*;
 
-import javax.crypto.SecretKey;
 import java.io.Serializable;
 
 @Entity
@@ -30,24 +29,24 @@ public class Incidencia implements Serializable {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "key")
-    private byte[] key;
+    @Lob
+    private byte[] llave;
 
     @Column(name = "mensajes")
-    private String mensajes;
+    private byte[] mensajes;
 
     //region Constructors
     public Incidencia() {
     }
 
-    public Incidencia(Long codIncidencia, Area area, Usuario usuario, Nivel nivel, Estado estado, String descripcion, byte[] key, String mensajes) {
+    public Incidencia(Long codIncidencia, Area area, Usuario usuario, Nivel nivel, Estado estado, String descripcion, byte[] llave, byte[] mensajes) {
         this.codIncidencia = codIncidencia;
         this.area = area;
         this.usuario = usuario;
         this.nivel = nivel;
         this.estado = estado;
         this.descripcion = descripcion;
-        this.key = key;
+        this.llave = llave;
         this.mensajes = mensajes;
     }
     //endregion
@@ -101,19 +100,19 @@ public class Incidencia implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public byte[] getKey() {
-        return key;
+    public byte[] getLlave() {
+        return llave;
     }
 
-    public void setKey(byte[] key) {
-        this.key = key;
+    public void setLlave(byte[] key) {
+        this.llave = key;
     }
 
-    public String getMensajes() {
+    public byte[] getMensajes() {
         return mensajes;
     }
 
-    public void setMensajes(String mensajes) {
+    public void setMensajes(byte[] mensajes) {
         this.mensajes = mensajes;
     }
 
