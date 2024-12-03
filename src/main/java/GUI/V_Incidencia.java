@@ -14,4 +14,7 @@ public class V_Incidencia {
     private JTextField estadoView;
     private JButton verIncidenciaButton;
     private JScrollPane incidenciasScrollp;
+    private JTextField textField1;
+    private JButton contestarButton;
+    private JScrollPane mensajesScrollP;
 }
