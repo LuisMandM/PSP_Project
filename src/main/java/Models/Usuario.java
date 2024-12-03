@@ -20,6 +20,8 @@ public class Usuario implements Serializable {
     private String nombre;
     @Column(name = "apellido")
     private String apellido;
+    @Column(name = "fNacimiento")
+    private String fNacimiento;
     @Column(name = "email")
     private String email;
     @Column(name = "usuario", unique = true)
@@ -51,6 +53,16 @@ public class Usuario implements Serializable {
     //endregion
 
     //region Getters n' Setters
+
+
+    public String getfNacimiento() {
+        return fNacimiento;
+    }
+
+    public void setfNacimiento(String fNacimiento) {
+        this.fNacimiento = fNacimiento;
+    }
+
     public void setCodigoEmple(Long codigoEmple) {
         this.codigoEmple = codigoEmple;
     }
