@@ -34,6 +34,8 @@ public class UsuarioDaoImpl extends Dao<Usuario, String> implements IUsuarioDao 
             System.out.println("Error al obtener el resultado: " + e.getMessage());
         } catch (NoResultException e) {
             System.out.println("Error al encontrar el resultado: " + e.getMessage());
+            Manejador.getInstance().getEm().getTransaction().isActive();
+            Manejador.getInstance().getEm().getTransaction().rollback();
         }
         return result;
     }

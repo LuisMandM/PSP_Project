@@ -32,9 +32,9 @@ class UsuarioDaoImplTest {
 
         UsuarioDaoImpl dao = new UsuarioDaoImpl();
         try {
-            Usuario usuario = dao.findByUsername("Username");
-            assertNotNull(usuario);
-            System.out.println(usuario);
+            Usuario usuario = dao.findByUsername("pepe");
+            assertNull (usuario);
+            System.out.println("Usuario no encontrado");
         } catch (SQLException e) {
             System.out.println("Error al consultar el usuario: " + e.getMessage());
         }
