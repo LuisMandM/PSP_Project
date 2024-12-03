@@ -30,24 +30,18 @@ public class Usuario implements Serializable {
     @Column(name = "password")
     private byte[] password;
 
-    @Column(name = "llaves")
-    private KeyPair llaves;
+    @Lob
+    private byte[] publicKey;
+
+    @Lob
+    private byte[] privateKey;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Incidencia> incidencias;
 
 
     //region Constructors
-    public Usuario(Long codigoEmple, String nombre, String apellido, String email, String username, byte[] password, KeyPair llaves, List<Incidencia> incidencias) {
-        this.codigoEmple = codigoEmple;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.llaves = llaves;
-        this.incidencias = incidencias;
-    }
+
 
     public Usuario() {
     }
@@ -55,6 +49,14 @@ public class Usuario implements Serializable {
 
     //region Getters n' Setters
 
+
+    public void setPublicKey(byte[] publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public void setPrivateKey(byte[] privateKey) {
+        this.privateKey = privateKey;
+    }
 
     public Date getfNacimiento() {
         return fNacimiento;
@@ -110,22 +112,6 @@ public class Usuario implements Serializable {
 
     public void setPassword(byte[] password) {
         this.password = password;
-    }
-
-    public PublicKey getPublicKey() {
-        return llaves.getPublic();
-    }
-
-    public PrivateKey getPrivateKey() {
-        return llaves.getPrivate();
-    }
-
-    public KeyPair getLlaves() {
-        return llaves;
-    }
-
-    public void setLlaves(KeyPair llaves) {
-        this.llaves = llaves;
     }
 
     public List<Incidencia> getIncidencias() {
