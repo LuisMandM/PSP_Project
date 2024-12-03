@@ -47,12 +47,10 @@ public class ServerThread extends Thread {
                 case 100:
                     byte[] contrasenia = (byte[]) entrada.readObject();
                     String passField = (String) entrada.readObject();
-
                     try {
                         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
                         messageDigest.update(passField.getBytes());
                         byte[] hashed = messageDigest.digest();
-
                         if (Arrays.equals(hashed, contrasenia)) {
                             salida.writeObject(true);
                         } else salida.writeObject(false);
