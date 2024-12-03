@@ -258,6 +258,10 @@ public class V_Register {
 
     }
 
+    public JPanel getPanelPrincipal() {
+        return panelPrincipal;
+    }
+
     public static void main(String[] args) {
         try {
             // Set System L&F
