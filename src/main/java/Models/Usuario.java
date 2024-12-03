@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,7 @@ public class Usuario implements Serializable {
     @Column(name = "apellido")
     private String apellido;
     @Column(name = "fNacimiento")
-    private String fNacimiento;
+    private Date fNacimiento;
     @Column(name = "email")
     private String email;
     @Column(name = "usuario", unique = true)
@@ -55,11 +56,11 @@ public class Usuario implements Serializable {
     //region Getters n' Setters
 
 
-    public String getfNacimiento() {
+    public Date getfNacimiento() {
         return fNacimiento;
     }
 
-    public void setfNacimiento(String fNacimiento) {
+    public void setfNacimiento(Date fNacimiento) {
         this.fNacimiento = fNacimiento;
     }
 
