@@ -1,8 +1,12 @@
 package Server;
 
+import Models.Incidencia;
+import Models.Nivel;
 import Models.Usuario;
 import dao.UsuarioDaoImpl;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,6 +16,7 @@ import java.nio.ByteBuffer;
 import java.security.*;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Random;
 
 import static Server.Utils.*;
 
@@ -69,6 +74,30 @@ public class ServerThread extends Thread {
                             System.out.println("Error en la codificacion de la contraseña: " + e.getMessage());
                             salida.writeObject(false);
                         }
+                    case 200:
+                        byte[] AESCrypted = (byte[]) entrada.readObject();
+                        byte[] AES = descifrarConClavePrivada(AESCrypted, keys.getPrivate());
+                        SecretKey AESKey = CastAES(AES);
+
+                        byte[] report = (byte[]) entrada.readObject();
+                        report = DescifrarAES(report, AESKey);
+                        byte[] sign = (byte[]) entrada.readObject();
+
+                        if (VerifySign(report, sign, publicKeyClient)) {
+                            salida.writeObject(true);
+                            Incidencia incidencia = BytesToIncidencia(report);
+                            if (incidencia != null) {
+                                salida.writeObject(true);
+                                Incidencia gestionada = GestionarIncidencia(incidencia);
+                                byte[] reportGest = IncidenciaToBytes(gestionada);
+                                byte[] reportCipher = CifrarAES(reportGest, AESKey);
+                                salida.writeObject(reportCipher);
+                            } else
+                                salida.writeObject(false);
+
+                        } else salida.writeObject(false);
+
+
                     default:
                         break;
                 }
@@ -87,17 +116,45 @@ public class ServerThread extends Thread {
         }
     }
 
-
-    private KeyPair GenerarLLaves() {
-        KeyPair keys = null;
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048); // Tamaño de la clave de 2048 bits
-            keys = keyPairGenerator.genKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("No se puede generar el RSA");
+    private Incidencia GestionarIncidencia(Incidencia incidencia) {
+        int nivel = new Random().nextInt(0, 3);
+        int horas = 0;
+        switch (nivel) {
+            case 0:
+                incidencia.setNivel(Nivel.LEVE);
+                horas = new Random().nextInt(24, 72);
+                incidencia.setTiempo(hoursToMillis(horas));
+                break;
+            case 1:
+                incidencia.setNivel(Nivel.MODERADO);
+                horas = new Random().nextInt(24, 36);
+                incidencia.setTiempo(hoursToMillis(horas));
+                break;
+            case 2:
+                incidencia.setNivel(Nivel.ALTO);
+                horas = new Random().nextInt(0, 24);
+                incidencia.setTiempo(hoursToMillis(horas));
+                break;
         }
+        SecretKey key = GenerarLLaveSincro();
+        incidencia.setLlave(key.getEncoded());
+        return incidencia;
+    }
 
-        return keys;
+    private static boolean VerifySign(byte[] report, byte[] sign, PublicKey publicKey) {
+        boolean verificado = false;
+        try {
+            Signature verify = Signature.getInstance("SHA1withRSA");
+            verify.initVerify(publicKey);
+            verify.update(report);
+            verificado = verify.verify(sign);
+        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
+            System.out.println("Error al verificar la firma: " + e.getMessage());
+        }
+        return verificado;
+    }
+
+    private long hoursToMillis(long hours) {
+        return hours * 60 * 60 * 1000;
     }
 }

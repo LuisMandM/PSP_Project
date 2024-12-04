@@ -10,6 +10,7 @@ public class Incidencia implements Serializable {
 
     @Id
     @Column(name = "codIncidencia")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codIncidencia;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)

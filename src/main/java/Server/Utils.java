@@ -1,12 +1,10 @@
 package Server;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import Models.Incidencia;
+
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -96,6 +94,94 @@ public class Utils {
         }
 
         return privateKey;
+    }
+
+
+    public static byte[] IncidenciaToBytes(Incidencia obj) {
+        byte[] bytes = null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            oos.close();
+            bytes = bos.toByteArray();
+        } catch (IOException e) {
+            System.out.println("Error al pasar a Bytes: " + e.getMessage());
+        }
+
+        return bytes;
+    }
+
+    public static Incidencia BytesToIncidencia(byte[] data) {
+        Incidencia incidencia = null;
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(data);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            incidencia = (Incidencia) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error al castear Array de Bytes: " + e.getMessage());
+        }
+        return incidencia;
+    }
+
+    public static SecretKey GenerarLLaveSincro() {
+        SecretKey key = null;
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(128);  // 128 bits de longitud
+            key = keyGenerator.generateKey();
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("No se puede generar el AES");
+        }
+        return key;
+    }
+
+    public static SecretKey CastAES(byte[] keyBytes) {
+        return new SecretKeySpec(keyBytes, "AES");
+    }
+
+
+    public static byte[] CifrarAES(byte[] objeto, SecretKey key) {
+        byte[] cifrado = null;
+        try {
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            cifrado = cipher.doFinal(objeto);
+
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
+        } catch (NoSuchPaddingException e) {
+            System.out.println("NoSuchPaddingException: " + e.getMessage());
+        } catch (InvalidKeyException e) {
+            System.out.println("InvalidKeyException: " + e.getMessage());
+        } catch (IllegalBlockSizeException e) {
+            System.out.println("IllegalBlockSizeException: " + e.getMessage());
+        } catch (BadPaddingException e) {
+            System.out.println("BadPaddingException: " + e.getMessage());
+        }
+        return cifrado;
+    }
+
+
+    public static byte[] DescifrarAES(byte[] textoCifrado, SecretKey key) {
+
+        byte[] descifrado = null;
+        try {
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            descifrado = cipher.doFinal(textoCifrado);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
+        } catch (NoSuchPaddingException e) {
+            System.out.println("NoSuchPaddingException: " + e.getMessage());
+        } catch (InvalidKeyException e) {
+            System.out.println("InvalidKeyException: " + e.getMessage());
+        } catch (IllegalBlockSizeException e) {
+            System.out.println("IllegalBlockSizeException: " + e.getMessage());
+        } catch (BadPaddingException e) {
+            System.out.println("BadPaddingException: " + e.getMessage());
+        }
+        return descifrado;
     }
 
     private static <T> byte[] GetBytes(T object) {

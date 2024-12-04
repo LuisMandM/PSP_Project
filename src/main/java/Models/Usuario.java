@@ -1,5 +1,6 @@
 package Models;
 
+import Server.Utils;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -120,6 +121,14 @@ public class Usuario implements Serializable {
 
     public void setIncidencias(List<Incidencia> incidencias) {
         this.incidencias = incidencias;
+    }
+
+    public PublicKey getPublicKey() {
+        return Utils.bytesToPublicKey(this.publicKey);
+    }
+
+    public PrivateKey getPrivateKey() {
+        return Utils.bytesToPrivateKey(this.privateKey);
     }
     //endregion
 }

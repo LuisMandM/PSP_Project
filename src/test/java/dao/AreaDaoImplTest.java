@@ -20,11 +20,11 @@ class AreaDaoImplTest {
     void create() {
         KeyPair keys = GenerarLLaves();
         Area area = new Area();
-        area.setNombre("Peticion");
+        area.setNombre("Error Urgente");
         byte[] hashed = null;
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update("Peticion".getBytes());
+            messageDigest.update("Error".getBytes());
             hashed = messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
             System.out.println("Error de Algoritmo: " + e.getMessage());
