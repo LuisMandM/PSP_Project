@@ -10,10 +10,14 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
+import java.security.KeyPair;
+import java.security.PublicKey;
 import java.sql.SQLException;
 import java.util.EventListener;
 
 import static Server.Docker.DockerLauncher;
+import static Server.Utils.*;
 
 public class V_Login {
     private JTextField userTxtFld;
@@ -23,8 +27,11 @@ public class V_Login {
     private JPanel panelPrincipal;
 
     UsuarioDaoImpl dao = new UsuarioDaoImpl();
+    private KeyPair keysLogin = null;
 
     public V_Login(JFrame frame) {
+        keysLogin = GenerarLLaves();
+
         iniciarSesionButton.addActionListener(e -> {
             try {
                 Usuario current = dao.findByUsername(userTxtFld.getText());
@@ -74,6 +81,7 @@ public class V_Login {
         int port = 8888;
         String host = "localhost";
         boolean result = false;
+        PublicKey serverPublicKey = null;
 
         SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         try {
@@ -82,12 +90,20 @@ public class V_Login {
             ObjectOutputStream salida = new ObjectOutputStream(peticion.getOutputStream());
             ObjectInputStream entrada = new ObjectInputStream(peticion.getInputStream());
 
-            salida.writeObject(100);
-            int confirmacion = (Integer) entrada.readObject();
+            salida.writeObject(keysLogin.getPublic());
+            serverPublicKey = (PublicKey) entrada.readObject();
+
+            int mensaje = 100;
+            byte[] peticionbytes = ByteBuffer.allocate(4).putInt(mensaje).array();
+            salida.writeObject(cifrarConClavePublica(peticionbytes, serverPublicKey));
+
+            byte[] confirmacionRaw = (byte[]) entrada.readObject();
+            confirmacionRaw = descifrarConClavePrivada(confirmacionRaw, keysLogin.getPrivate());
+            int confirmacion = ByteBuffer.wrap(confirmacionRaw).getInt();
 
             if (confirmacion == 100) {
-                salida.writeObject(guardada);
-                salida.writeObject(intento);
+                salida.writeObject(cifrarConClavePublica(guardada, serverPublicKey));
+                salida.writeObject(cifrarConClavePublica(intento.getBytes(), serverPublicKey));
                 boolean validacion = (boolean) entrada.readObject();
 
                 if (validacion) {

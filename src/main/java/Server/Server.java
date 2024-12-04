@@ -31,8 +31,6 @@ public class Server {
                     serverThread.start();
                     System.out.println("Peticion delegada");
                 }
-
-
             } catch (IOException e) {
                 System.out.println("Error al crear el Socket servidor: " + e.getMessage());
             }

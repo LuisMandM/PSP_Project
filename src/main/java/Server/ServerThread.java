@@ -6,18 +6,14 @@ import dao.UsuarioDaoImpl;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.URL;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.ByteBuffer;
+import java.security.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+
+import static Server.Utils.*;
 
 public class ServerThread extends Thread {
     private SSLSocket peticion;
@@ -41,39 +37,53 @@ public class ServerThread extends Thread {
 
         URL persistenceXml = Thread.currentThread().getContextClassLoader().getResource("META-INF/persistence.xml");
         System.out.println("persistence.xml encontrado en: " + persistenceXml);
-
+        System.out.println("Iniciando Intercambio de llaves");
         try {
-            int peticion = (Integer) entrada.readObject();
-            salida.writeObject(peticion);
-            switch (peticion) {
-                case 100:
-                    byte[] contrasenia = (byte[]) entrada.readObject();
-                    String passField = (String) entrada.readObject();
-                    try {
-                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                        messageDigest.update(passField.getBytes());
-                        byte[] hashed = messageDigest.digest();
-                        if (Arrays.equals(hashed, contrasenia)) {
-                            salida.writeObject(true);
-                        } else salida.writeObject(false);
-                    } catch (NoSuchAlgorithmException e) {
-                        System.out.println("Error en la codificacion de la contraseña: " + e.getMessage());
-                        salida.writeObject(false);
-                    }
-
-
-                default:
-                    break;
-            }
-        } catch (IOException e) {
-            System.out.println("Error al recibir el objeto: " + e.getMessage());
+            PublicKey publicKeyClient = (PublicKey) entrada.readObject();
+            salida.writeObject(keys.getPublic());
+            System.out.println("Intercambio de llaves correcto");
             try {
-                salida.writeObject(-500);
-            } catch (IOException ex) {
-                System.out.println("Si esto falla ya salvame diosito");
+                byte[] peticionRaw = (byte[]) entrada.readObject();
+                peticionRaw = descifrarConClavePrivada(peticionRaw, keys.getPrivate());
+                int peticion = ByteBuffer.wrap(peticionRaw).getInt();
+
+                byte[] peticionBytes = ByteBuffer.allocate(4).putInt(peticion).array();
+                salida.writeObject(cifrarConClavePublica(peticionBytes, publicKeyClient));
+                switch (peticion) {
+                    case 100:
+                        byte[] contrasenia = (byte[]) entrada.readObject();
+                        contrasenia = descifrarConClavePrivada(contrasenia, keys.getPrivate());
+
+                        byte[] passRaw = (byte[]) entrada.readObject();
+                        passRaw = descifrarConClavePrivada(passRaw, keys.getPrivate());
+                        String passField = new String(passRaw);
+
+                        try {
+                            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                            messageDigest.update(passField.getBytes());
+                            byte[] hashed = messageDigest.digest();
+                            if (Arrays.equals(hashed, contrasenia)) {
+                                salida.writeObject(true);
+                            } else salida.writeObject(false);
+                        } catch (NoSuchAlgorithmException e) {
+                            System.out.println("Error en la codificacion de la contraseña: " + e.getMessage());
+                            salida.writeObject(false);
+                        }
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                System.out.println("Error al recibir el objeto: " + e.getMessage());
+                try {
+                    salida.writeObject(-500);
+                } catch (IOException ex) {
+                    System.out.println("Si esto falla ya salvame diosito");
+                }
+            } catch (ClassNotFoundException e) {
+                System.out.println("Error al parcear el objeto: " + e.getMessage());
             }
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error al parcear el objeto: " + e.getMessage());
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error en intercambio de llaves: " + e.getMessage());
         }
     }
 

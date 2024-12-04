@@ -4,10 +4,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.security.*;
 
 public class Utils {
-    public static KeyPair GenerarLLaves() {
+    public synchronized static KeyPair GenerarLLaves() {
         KeyPair keys = null;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -20,12 +23,13 @@ public class Utils {
         return keys;
     }
 
-    public static byte[] cifrarConClavePublica(String mensaje, PublicKey publicKey) {
+    public synchronized static byte[] cifrarConClavePublica(byte[] mensaje, PublicKey publicKey) {
         byte[] cifrado = null;
+
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            cifrado = cipher.doFinal(mensaje.getBytes());  // Devuelve los bytes cifrados
+            cifrado = cipher.doFinal(mensaje);
         } catch (NoSuchAlgorithmException e) {
             System.out.println("Error de algoritmo: " + e.getMessage());
         } catch (NoSuchPaddingException e) {
@@ -41,7 +45,7 @@ public class Utils {
         return cifrado;
     }
 
-    public static byte[] descifrarConClavePrivada(byte[] mensajeCifrado, PrivateKey privateKey) {
+    public synchronized static byte[] descifrarConClavePrivada(byte[] mensajeCifrado, PrivateKey privateKey) {
         byte[] descifrado = null;
         try {
             Cipher cipher = Cipher.getInstance("RSA");
@@ -59,5 +63,20 @@ public class Utils {
             System.out.println("Otros errores: " + e.getMessage());
         }
         return descifrado;
+    }
+
+    private static <T> byte[] GetBytes(T object) {
+        byte[] bytes = null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(object);
+            oos.flush();
+            bytes = bos.toByteArray();
+        } catch (IOException e) {
+            System.out.println("Error en serializacion: " + e.getMessage());
+        }
+
+        return bytes;
     }
 }
