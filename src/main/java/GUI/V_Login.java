@@ -37,16 +37,34 @@ public class V_Login {
                 Usuario current = dao.findByUsername(userTxtFld.getText());
                 if (current != null) {
                     if (SendPPeticion(current.getPassword(), passwordTxtFld.getText())) {
-                        JOptionPane.showMessageDialog(panelPrincipal, """
-                                Validacion de la clave correcta
-                                """, "Paso", JOptionPane.INFORMATION_MESSAGE);
+                        try {
+                            // Set System L&F
+                            UIManager.setLookAndFeel(
+                                    UIManager.getSystemLookAndFeelClassName());
+                        } catch (UnsupportedLookAndFeelException ex) {
+                            // handle exception
+                        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        JFrame jframe = new JFrame("Panel Incidencia");
+                        jframe.setContentPane(new V_Incidencia(current, jframe).getPanelPrincipal());
+                        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        jframe.pack();
+                        jframe.setVisible(true);
+                        Toolkit toolkit = Toolkit.getDefaultToolkit();
+                        Dimension screenSize = toolkit.getScreenSize();
+                        int x = (screenSize.width - jframe.getWidth()) / 2;
+                        int y = (screenSize.height - jframe.getHeight()) / 2;
+                        jframe.setLocation(x, y);
+                        frame.dispose();
 
                     } else JOptionPane.showMessageDialog(panelPrincipal, """
                             La contraseña es incorrecta
                             """, "Error", JOptionPane.ERROR_MESSAGE);
                 } else JOptionPane.showMessageDialog(panelPrincipal, """
-                            Usuario incorrecto
-                            """, "Error", JOptionPane.ERROR_MESSAGE);
+                        Usuario incorrecto
+                        """, "Error", JOptionPane.ERROR_MESSAGE);
 
 
             } catch (SQLException ex) {
