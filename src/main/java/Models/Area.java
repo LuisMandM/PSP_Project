@@ -116,4 +116,9 @@ public class Area implements Serializable {
 
         return privateKey;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d - %s", codigo, nombre);
+    }
 }
