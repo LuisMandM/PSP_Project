@@ -3,9 +3,10 @@ package Models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 
 @Entity
@@ -13,13 +14,17 @@ import java.util.List;
 public class Area implements Serializable {
     @Id
     @Column(name = "codigo")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigo;
     @Column(name = "nombre")
     private String nombre;
     @Column(name = "password")
-    private String password;
-    @Column(name = "llaves")
-    private KeyPair llaves;
+    private byte[] password;
+    @Lob
+    private byte[] publicKey;
+
+    @Lob
+    private byte[] privateKey;
 
     @OneToMany(mappedBy = "area", fetch = FetchType.LAZY)
     private List<Incidencia> incidencias;
@@ -28,12 +33,7 @@ public class Area implements Serializable {
     public Area() {
     }
 
-    public Area(Long codigo, String nombre, String password, KeyPair llaves) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.password = password;
-        this.llaves = llaves;
-    }
+
     //endregion
 
     //region Getters n' Setters
@@ -53,28 +53,28 @@ public class Area implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(byte[] password) {
         this.password = password;
     }
 
     public PublicKey getPublicKey() {
-        return llaves.getPublic();
+        return bytesToPublicKey(this.publicKey);
+    }
+
+    public void setPublicKey(byte[] publicKey) {
+        this.publicKey = publicKey;
     }
 
     public PrivateKey getPrivateKey() {
-        return llaves.getPrivate();
+        return bytesToPrivateKey(this.privateKey);
     }
 
-    public void setLlaves(KeyPair llaves) {
-        this.llaves = llaves;
-    }
-
-    public KeyPair getLlaves() {
-        return llaves;
+    public void setPrivateKey(byte[] privateKey) {
+        this.privateKey = privateKey;
     }
 
     public List<Incidencia> getIncidencias() {
@@ -86,4 +86,34 @@ public class Area implements Serializable {
     }
 
     //endregion
+
+    private static PublicKey bytesToPublicKey(byte[] publicKeyBytes) {
+        PublicKey publicKey = null;
+
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
+            publicKey = keyFactory.generatePublic(spec);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
+        } catch (InvalidKeySpecException e) {
+            System.out.println("InvalidKeySpecException: " + e.getMessage());
+        }
+        return publicKey;
+    }
+
+    private static PrivateKey bytesToPrivateKey(byte[] privateKeyBytes) {
+        PrivateKey privateKey = null;
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            privateKey = keyFactory.generatePrivate(spec);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
+        } catch (InvalidKeySpecException e) {
+            System.out.println("InvalidKeySpecException: " + e.getMessage());
+        }
+
+        return privateKey;
+    }
 }

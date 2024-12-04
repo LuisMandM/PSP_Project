@@ -6,6 +6,8 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AreaDaoImpl extends Dao<Area, String> implements IAreaDao {
     @Override
@@ -36,4 +38,44 @@ public class AreaDaoImpl extends Dao<Area, String> implements IAreaDao {
         }
         return result;
     }
+
+    @Override
+    public List<Area> getAll() {
+        ArrayList<Area> areas = new ArrayList<Area>();
+
+        String HQL_COD = "From Area as area JOIN area.incidencias";
+        Query query = null;
+
+        try {
+            Manejador.getInstance().getEm().getTransaction().begin();
+            query = Manejador.getInstance().getEm().createQuery(HQL_COD);
+            List resultado = query.getResultList();
+            if (resultado != null) {
+                areas = (ArrayList<Area>) resultado;
+            }
+            Manejador.getInstance().getEm().getTransaction().commit();
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener el resultado: " + e.getMessage());
+        }
+
+
+        //String HQL_COD = "FROM Student as St JOIN St.courses as Co WITH Co.id = :param1";
+        //        Query query = null;
+        //        try {
+        //            Manejador.getInstance().getEm().getTransaction().begin();
+        //
+        //            query = Manejador.getInstance().getEm().createQuery(HQL_COD);
+        //            query.setParameter("param1", curso_id);
+        //            List results = query.getResultList();
+        //            if (results != null) {
+        //                students = (List<Student>) results;
+        //            }
+        //        } catch (SQLException e) {
+        //            System.out.println(e.getMessage());
+        //        }
+
+        return areas;
+    }
+
 }
