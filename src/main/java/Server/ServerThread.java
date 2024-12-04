@@ -20,12 +20,14 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class ServerThread extends Thread {
-    SSLSocket peticion;
-    ObjectOutputStream salida;
-    ObjectInputStream entrada;
+    private SSLSocket peticion;
+    private KeyPair keys;
+    private ObjectOutputStream salida;
+    private ObjectInputStream entrada;
 
-    public ServerThread(SSLSocket peticion) {
+    public ServerThread(SSLSocket peticion, KeyPair keys) {
         this.peticion = peticion;
+        this.keys = keys;
         try {
             salida = new ObjectOutputStream(peticion.getOutputStream());
             entrada = new ObjectInputStream(peticion.getInputStream());
