@@ -12,7 +12,7 @@ public class Incidencia implements Serializable {
     @Column(name = "codIncidencia")
     private Long codIncidencia;
 
-    @ManyToOne(optional = false,fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_area", referencedColumnName = "codigo")
     private Area area;
 
@@ -28,6 +28,9 @@ public class Incidencia implements Serializable {
 
     @Column(name = "descripcion")
     private String descripcion;
+
+    @Column(name = "tiempo")
+    private Long tiempo;
 
     @Lob
     private byte[] llave;
@@ -116,6 +119,13 @@ public class Incidencia implements Serializable {
         this.mensajes = mensajes;
     }
 
+    public Long getTiempo() {
+        return tiempo;
+    }
+
+    public void setTiempo(Long tiempo) {
+        this.tiempo = tiempo;
+    }
 
     //endregion
 }
