@@ -1,5 +1,6 @@
 package Models;
 
+import Server.Utils;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -62,7 +63,7 @@ public class Area implements Serializable {
     }
 
     public PublicKey getPublicKey() {
-        return bytesToPublicKey(this.publicKey);
+        return Utils.bytesToPublicKey(this.publicKey);
     }
 
     public void setPublicKey(byte[] publicKey) {
@@ -70,7 +71,7 @@ public class Area implements Serializable {
     }
 
     public PrivateKey getPrivateKey() {
-        return bytesToPrivateKey(this.privateKey);
+        return Utils.bytesToPrivateKey(this.privateKey);
     }
 
     public void setPrivateKey(byte[] privateKey) {
@@ -87,35 +88,35 @@ public class Area implements Serializable {
 
     //endregion
 
-    private static PublicKey bytesToPublicKey(byte[] publicKeyBytes) {
-        PublicKey publicKey = null;
-
-        try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
-            publicKey = keyFactory.generatePublic(spec);
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
-        } catch (InvalidKeySpecException e) {
-            System.out.println("InvalidKeySpecException: " + e.getMessage());
-        }
-        return publicKey;
-    }
-
-    private static PrivateKey bytesToPrivateKey(byte[] privateKeyBytes) {
-        PrivateKey privateKey = null;
-        try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyBytes);
-            privateKey = keyFactory.generatePrivate(spec);
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
-        } catch (InvalidKeySpecException e) {
-            System.out.println("InvalidKeySpecException: " + e.getMessage());
-        }
-
-        return privateKey;
-    }
+//    private static PublicKey bytesToPublicKey(byte[] publicKeyBytes) {
+//        PublicKey publicKey = null;
+//
+//        try {
+//            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
+//            publicKey = keyFactory.generatePublic(spec);
+//        } catch (NoSuchAlgorithmException e) {
+//            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
+//        } catch (InvalidKeySpecException e) {
+//            System.out.println("InvalidKeySpecException: " + e.getMessage());
+//        }
+//        return publicKey;
+//    }
+//
+//    private static PrivateKey bytesToPrivateKey(byte[] privateKeyBytes) {
+//        PrivateKey privateKey = null;
+//        try {
+//            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyBytes);
+//            privateKey = keyFactory.generatePrivate(spec);
+//        } catch (NoSuchAlgorithmException e) {
+//            System.out.println("NoSuchAlgorithmException: " + e.getMessage());
+//        } catch (InvalidKeySpecException e) {
+//            System.out.println("InvalidKeySpecException: " + e.getMessage());
+//        }
+//
+//        return privateKey;
+//    }
 
     @Override
     public String toString() {
