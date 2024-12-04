@@ -35,14 +35,18 @@ public class V_Login {
         iniciarSesionButton.addActionListener(e -> {
             try {
                 Usuario current = dao.findByUsername(userTxtFld.getText());
-                if (SendPPeticion(current.getPassword(), passwordTxtFld.getText())) {
-                    JOptionPane.showMessageDialog(panelPrincipal, """
-                            Validacion de la clave correcta
-                            """, "Paso", JOptionPane.INFORMATION_MESSAGE);
+                if (current != null) {
+                    if (SendPPeticion(current.getPassword(), passwordTxtFld.getText())) {
+                        JOptionPane.showMessageDialog(panelPrincipal, """
+                                Validacion de la clave correcta
+                                """, "Paso", JOptionPane.INFORMATION_MESSAGE);
 
+                    } else JOptionPane.showMessageDialog(panelPrincipal, """
+                            La contraseña es incorrecta
+                            """, "Error", JOptionPane.ERROR_MESSAGE);
                 } else JOptionPane.showMessageDialog(panelPrincipal, """
-                        La contraseña es incorrecta
-                        """, "Error", JOptionPane.ERROR_MESSAGE);
+                            Usuario incorrecto
+                            """, "Error", JOptionPane.ERROR_MESSAGE);
 
 
             } catch (SQLException ex) {
@@ -62,15 +66,15 @@ public class V_Login {
             }
 
             JFrame jframe = new JFrame("Registro de Usuario");
-            frame.setContentPane(new V_Register(jframe).getPanelPrincipal());
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.pack();
-            frame.setVisible(true);
+            jframe.setContentPane(new V_Register(jframe).getPanelPrincipal());
+            jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            jframe.pack();
+            jframe.setVisible(true);
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension screenSize = toolkit.getScreenSize();
-            int x = (screenSize.width - frame.getWidth()) / 2;
-            int y = (screenSize.height - frame.getHeight()) / 2;
-            frame.setLocation(x, y);
+            int x = (screenSize.width - jframe.getWidth()) / 2;
+            int y = (screenSize.height - jframe.getHeight()) / 2;
+            jframe.setLocation(x, y);
 
         });
     }
