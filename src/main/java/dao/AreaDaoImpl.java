@@ -43,7 +43,7 @@ public class AreaDaoImpl extends Dao<Area, String> implements IAreaDao {
     public List<Area> getAll() {
         ArrayList<Area> areas = new ArrayList<Area>();
 
-        String HQL_COD = "From Area as area JOIN area.incidencias";
+        String HQL_COD = "From Area as area";
         Query query = null;
 
         try {
