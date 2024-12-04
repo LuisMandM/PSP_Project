@@ -106,7 +106,7 @@ public class V_Register {
 
         infoPassword.addActionListener(e -> {
             JOptionPane.showMessageDialog(panelPrincipal, """
-                    La contraseña debe contener minimo 8 caracteres
+                    La contraseña debe contener minimo 12 caracteres
                     puede incluir letras, números y los caracteres especiales
                     '_' , '$' , '@'
                     """, "Formato", JOptionPane.INFORMATION_MESSAGE);
@@ -114,7 +114,7 @@ public class V_Register {
 
         infoUser.addActionListener(e -> {
             JOptionPane.showMessageDialog(panelPrincipal, """
-                    El usuario debe contener minimo 12 caracteres
+                    El usuario debe contener minimo 8 caracteres
                     puede incluir letras, números y los caracteres especiales
                     '_' , '$' , '@'
                     """, "Formato", JOptionPane.INFORMATION_MESSAGE);
