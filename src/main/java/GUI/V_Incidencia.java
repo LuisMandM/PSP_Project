@@ -8,7 +8,6 @@ import dao.AreaDaoImpl;
 import dao.IncidenciaDaoImpl;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.swing.*;
@@ -39,7 +38,7 @@ public class V_Incidencia {
     private JTextField textField1;
     private JButton contestarButton;
     private JScrollPane mensajesScrollP;
-    private JTextField textField2;
+    private JTextField timeView;
     private JPanel DetailPanel;
     private JPanel MensajesPanel;
     private JTable incidenciasTable;
@@ -55,6 +54,8 @@ public class V_Incidencia {
         LoadCbox();
         DetailPanel.setVisible(false);
         MensajesPanel.setVisible(false);
+        descTxtArea.setLineWrap(true);
+        descTxtArea.setWrapStyleWord(true);
         frame.pack();
 
         tabbedPane1.addChangeListener(new ChangeListener() {
@@ -69,6 +70,8 @@ public class V_Incidencia {
                         LoadCbox();
                         DetailPanel.setVisible(false);
                         MensajesPanel.setVisible(false);
+                        descTxtArea.setLineWrap(true);
+                        descTxtArea.setWrapStyleWord(true);
                         frame.pack();
                         break;
                     case 1:
@@ -86,7 +89,6 @@ public class V_Incidencia {
                             JOptionPane.showMessageDialog(panelPrincipal, "Actualmente no hay datos" +
                                     " de proyectos añadidos", "Sin Datos", JOptionPane.INFORMATION_MESSAGE);
                         }
-                        frame.pack();
                         //System.out.println(tablePanel.getSize());
                         break;
                 }
@@ -94,7 +96,6 @@ public class V_Incidencia {
 
             }
         });
-
         enviarButton.addActionListener(e -> {
             Incidencia current = new Incidencia();
             current.setUsuario(usuario);
@@ -130,6 +131,31 @@ public class V_Incidencia {
             }
 
         });
+        verIncidenciaButton.addActionListener(e -> {
+            if (incidenciasTable.getRowCount() > 0 && incidenciasTable.getSelectedRow() >= 0) {
+                Incidencia current = incidencias.get(incidenciasTable.getSelectedRow());
+                areaView.setText(current.getArea().toString());
+                descView.setText(current.getDescripcion());
+                timeView.setText(String.format("%d Horas", current.getTiempo() / (60 * 60 * 1000)));
+
+                switch (current.getEstado()) {
+                    case USUARIO -> estadoView.setText("Pendiente de acción Empleado");
+                    case AREA -> estadoView.setText("Pendiente de acción Area");
+                    case CERRADO -> estadoView.setText("Cerrado");
+                }
+
+                areaView.setEditable(false);
+                descView.setEditable(false);
+                timeView.setEditable(false);
+                estadoView.setEditable(false);
+
+                descView.setLineWrap(true);
+                descView.setWrapStyleWord(true);
+                DetailPanel.setVisible(true);
+                frame.pack();
+            }
+        });
+
 
     }
 
