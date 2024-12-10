@@ -37,6 +37,21 @@ public class ServerThread extends Thread {
         }
     }
 
+    /**
+     * Metodo run del Hilo modificado.
+     * Uso de cifrado asimetrico para el envio y recepcion de informacion, peticion proveniente de la instancia
+     * creada del hilo en el servidor base.
+     * Uso de switch case para determinar los servicios que procesa.
+     * Codigo 100:
+     * Procesa la validacion de contraseña del Login, hace la comparativa entre el Hash enviado que se aloja en base de datos
+     * y el hash generado del intento de ingreso por parte del usuario
+     * retorna un valor booleano con la respuesta
+     * Codigo 200:
+     * Procesa la gestión de las incidencia enviadas, hace uso de un clave simetrica enviada por el lado del cliente
+     * para la desencriptacion del byte array que contiene la instancia de Incidencia.
+     * retorna la Incidencia gestionada.
+     *
+     */
     @Override
     public void run() {
 
@@ -116,6 +131,14 @@ public class ServerThread extends Thread {
         }
     }
 
+
+    /**
+     * Este metodo se encarga de "Gestionar" las incidencias dandole un nivel y un tiempo
+     * de respuesta aletorio
+     *
+     * @param incidencia Instancia de incidencia
+     * @return Instancia de incidencia "gestionada"
+     */
     private Incidencia GestionarIncidencia(Incidencia incidencia) {
         int nivel = new Random().nextInt(0, 3);
         int horas = 0;
@@ -141,6 +164,14 @@ public class ServerThread extends Thread {
         return incidencia;
     }
 
+    /**
+     * Metodo encargado de validar la autenticidad del objeto firmado enviado.
+     *
+     * @param report    byte array original
+     * @param sign      firma del byte array del parametro report
+     * @param publicKey llave enviada por el usuario
+     * @return True: si esta firmado correctamente, False: si no es autentica la firma
+     */
     private static boolean VerifySign(byte[] report, byte[] sign, PublicKey publicKey) {
         boolean verificado = false;
         try {

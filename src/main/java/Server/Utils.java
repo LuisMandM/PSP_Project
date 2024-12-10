@@ -11,6 +11,12 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class Utils {
+
+    /**
+     * Genera un par de llaves con algoritmo RSA.
+     *
+     * @return KeyPair - RSA
+     */
     public synchronized static KeyPair GenerarLLaves() {
         KeyPair keys = null;
         try {
@@ -24,6 +30,13 @@ public class Utils {
         return keys;
     }
 
+    /**
+     * Cifrado de un byte Array con clave Publica
+     *
+     * @param mensaje   byte Array
+     * @param publicKey PublicKey - RSA
+     * @return byte Array con el cifrado del mensaje.
+     */
     public synchronized static byte[] cifrarConClavePublica(byte[] mensaje, PublicKey publicKey) {
         byte[] cifrado = null;
 
@@ -46,6 +59,13 @@ public class Utils {
         return cifrado;
     }
 
+    /**
+     * Descifrado con Clave privada
+     *
+     * @param mensajeCifrado byte Array cifrado con RSA
+     * @param privateKey     PrivateKey RSA
+     * @return byte Array descifrado
+     */
     public synchronized static byte[] descifrarConClavePrivada(byte[] mensajeCifrado, PrivateKey privateKey) {
         byte[] descifrado = null;
         try {
@@ -66,6 +86,12 @@ public class Utils {
         return descifrado;
     }
 
+    /**
+     * Reconstruccion de un byte Array perteneciente a una PublicKey con algoritmo RSA
+     *
+     * @param publicKeyBytes byte Array de clave Publica
+     * @return PublicKey construida con RSA.
+     */
     public static PublicKey bytesToPublicKey(byte[] publicKeyBytes) {
         PublicKey publicKey = null;
 
@@ -81,6 +107,12 @@ public class Utils {
         return publicKey;
     }
 
+    /**
+     * Reconstruccion de un byte Array perteneciente a una PrivateKey con algoritmo RSA
+     *
+     * @param privateKeyBytes byte Array de clave Privada
+     * @return PrivateKey construida con RSA.
+     */
     public static PrivateKey bytesToPrivateKey(byte[] privateKeyBytes) {
         PrivateKey privateKey = null;
         try {
@@ -97,6 +129,12 @@ public class Utils {
     }
 
 
+    /**
+     * Serializacion de una instancia de la clase Incidencia
+     *
+     * @param obj Instancia de Incidencia
+     * @return Byte Array correspondiente al objeto dado
+     */
     public static byte[] IncidenciaToBytes(Incidencia obj) {
         byte[] bytes = null;
         try {
@@ -112,6 +150,12 @@ public class Utils {
         return bytes;
     }
 
+    /**
+     * Construccion de una instancia de Incidencia a partir de un byteArray
+     *
+     * @param data byte Array
+     * @return Instancia de Incidencia
+     */
     public static Incidencia BytesToIncidencia(byte[] data) {
         Incidencia incidencia = null;
         try {
@@ -124,6 +168,11 @@ public class Utils {
         return incidencia;
     }
 
+    /**
+     * Creacion de SecretKey con algoritmo AES
+     *
+     * @return SecretKey - AES
+     */
     public static SecretKey GenerarLLaveSincro() {
         SecretKey key = null;
         try {
@@ -136,11 +185,24 @@ public class Utils {
         return key;
     }
 
+    /**
+     * Recosntruccion de una SecretKey con algoritmo AES
+     *
+     * @param keyBytes byte Array con los bytes pertenecientes a la llaves
+     * @return SecretKey AES
+     */
     public static SecretKey CastAES(byte[] keyBytes) {
         return new SecretKeySpec(keyBytes, "AES");
     }
 
 
+    /**
+     * Cifrado de byteArray con SecretKey con algoritmo AES
+     *
+     * @param objeto byteArray origen
+     * @param key    SecretKey AES
+     * @return byteArray cifrado AES
+     */
     public static byte[] CifrarAES(byte[] objeto, SecretKey key) {
         byte[] cifrado = null;
         try {
@@ -163,6 +225,13 @@ public class Utils {
     }
 
 
+    /**
+     * Descifrado de byteArray con SecretKey con algoritmo AES
+     *
+     * @param textoCifrado byte Array cifrado con AES
+     * @param key          SecretKey AES
+     * @return byteArray descifrado.
+     */
     public static byte[] DescifrarAES(byte[] textoCifrado, SecretKey key) {
 
         byte[] descifrado = null;

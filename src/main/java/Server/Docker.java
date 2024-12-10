@@ -6,6 +6,13 @@ import java.io.InputStreamReader;
 
 public class Docker {
 
+    /**
+     * Metodo encargado de lanzar en Docker Compose correspondiente para el uso debido
+     * de la aplicacion, se debe tener el archivo siempre alojado en la siguiente ruta
+     * .\\Lanzadera\\docker-compose.yml
+     *
+     * @return True: el contenedor se monto correctamente, False: problemas con el Docker Compose
+     */
     public static boolean DockerLauncher() {
         boolean result = false;
         String composeFilePath = ".\\Lanzadera\\docker-compose.yml";
