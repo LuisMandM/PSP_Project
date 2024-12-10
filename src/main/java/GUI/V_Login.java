@@ -32,6 +32,12 @@ public class V_Login {
     public V_Login(JFrame frame) {
         keysLogin = GenerarLLaves();
 
+        /**
+         * iniciarSesionButton.addActionListener:
+         * Este bloque se encarga de consultar a la base de datos el usuario que intenta entrar, en caso de
+         * existir devuelve el objeto y con este se procede a ser las diferentes verificaciones de acceso,
+         * en caso de ser validas este objeto se envia a la ventana de Incidencia.
+         */
         iniciarSesionButton.addActionListener(e -> {
             try {
                 Usuario current = dao.findByUsername(userTxtFld.getText());
@@ -97,6 +103,17 @@ public class V_Login {
         });
     }
 
+    /**
+     * Codigo de procedimiento en el servidor: 100
+     * Se encarga de enviar al servidor el hash de la contraseña del usuario que intenta entrar, y la contraseña que esta
+     * probando, se comunica con el servidor para que este se encargue de validar si es corrrecta o no la contraseña.
+     * Uso de cifrado asimetrico para la comunicacion con el servidor.
+     * Conexion usando certificados mediante SSLSockets.
+     *
+     * @param guardada byte Array con el hash de la contraseña almacenado en Base de datos
+     * @param intento  intento de contraseña
+     * @return true: en caso de ser valida la contraseña, false: en caso de no serlo
+     */
     private boolean SendPPeticion(byte[] guardada, String intento) {
         System.setProperty("javax.net.ssl.trustStore", ".\\Certificados\\AlmacenUsuarioSSL.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "1234567");
@@ -153,28 +170,32 @@ public class V_Login {
 
     }
 
-    public static void main(String[] args) {
-        try {
-            // Set System L&F
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
-        JFrame frame = new JFrame("Inicio - Gestion Campeonato");
-        frame.setContentPane(new V_Login(frame).panelPrincipal);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        int x = (screenSize.width - frame.getWidth()) / 2;
-        int y = (screenSize.height - frame.getHeight()) / 2;
-        frame.setLocation(x, y);
-        if (DockerLauncher()) System.out.println("Docker Launcher exitoso");
-        else System.out.println("Problemas con el Docker");
+    public JPanel getPanelPrincipal() {
+        return panelPrincipal;
     }
+
+    //    public static void main(String[] args) {
+//        try {
+//            // Set System L&F
+//            UIManager.setLookAndFeel(
+//                    UIManager.getSystemLookAndFeelClassName());
+//        } catch (UnsupportedLookAndFeelException e) {
+//            // handle exception
+//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        JFrame frame = new JFrame("Inicio - Gestion Campeonato");
+//        frame.setContentPane(new V_Login(frame).panelPrincipal);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+//        frame.setVisible(true);
+//        Toolkit toolkit = Toolkit.getDefaultToolkit();
+//        Dimension screenSize = toolkit.getScreenSize();
+//        int x = (screenSize.width - frame.getWidth()) / 2;
+//        int y = (screenSize.height - frame.getHeight()) / 2;
+//        frame.setLocation(x, y);
+//        if (DockerLauncher()) System.out.println("Docker Launcher exitoso");
+//        else System.out.println("Problemas con el Docker");
+//    }
 }

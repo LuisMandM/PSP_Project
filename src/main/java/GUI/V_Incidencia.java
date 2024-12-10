@@ -96,6 +96,11 @@ public class V_Incidencia {
 
             }
         });
+        /**
+         * enviarButton.addActionListener:
+         * Bloque que permite la creación de la incidencia, enviarla al servidor a ser validada,
+         * y en caso de ser devuelta correctamente se encarga de guardarla en base de datos.
+         */
         enviarButton.addActionListener(e -> {
             Incidencia current = new Incidencia();
             current.setUsuario(usuario);
@@ -155,8 +160,6 @@ public class V_Incidencia {
                 frame.pack();
             }
         });
-
-
     }
 
     private void LoadCbox() {
@@ -187,6 +190,22 @@ public class V_Incidencia {
         return panelPrincipal;
     }
 
+    /**
+     * Codigo de Procedimiento en el servidor: 200
+     * Este metodo se encarga de comunicarse con el servidor buscando que valide la información
+     * de la incidencia generada.
+     * Combina tecnicas de Cifrado Simetrico y Asimetrico, primeramente se tiene el cifrado Asimetrico
+     * presente en el intercambio de llaves propias del usuario y del servidor para de esta manera poder
+     * hacer el intercambio seguro de la información. Paralelo a esto se usa debido a que el primer envio
+     * de informacion realizamos una firma de los objetos que se estan enviando.
+     * Hace uso de cifrado simetrico para codificar el byte[] en donde se aloja la incidencia, esto para poder
+     * enviar esta informacion al servidor dado que mediante el uso de cifrado asimetrico no lo permitia
+     * entonces debe cifrarse con una clave Simetrica y esta enviarla al servidor cifrada asimetricamente.
+     * Conexion usando certificados mediante SSLSockets.
+     *
+     * @param report byte Array con el contenido de la incidencia base proveniente de una instancia de Incidencia serializada .
+     * @return Objeto de la clase Incidencia gestionado por el servidor, null en caso de error
+     */
     private Incidencia SendPeticion(byte[] report) {
         System.setProperty("javax.net.ssl.trustStore", ".\\Certificados\\AlmacenUsuarioSSL.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "1234567");
@@ -260,6 +279,12 @@ public class V_Incidencia {
         return result;
     }
 
+    /**
+     * Firma de byte Arrays usando la privateKey del usuario en sesión
+     *
+     * @param report byte Array
+     * @return byte[]- firma del array original, null en caso de error
+     */
     private byte[] FirmarIncidencia(byte[] report) {
         byte[] sign = null;
         try {

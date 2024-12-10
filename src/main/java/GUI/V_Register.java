@@ -176,6 +176,11 @@ public class V_Register {
     }
     //endregion
 
+    /**
+     * Metodo para generar las llaves propias del usuario que se almacenaran en BD
+     *
+     * @return KeyPair con RSA
+     */
     private KeyPair GenerarLLaves() {
         KeyPair keys = null;
         try {
@@ -189,6 +194,13 @@ public class V_Register {
         return keys;
     }
 
+    /**
+     * Metodo para generar el hash de la contraseña suministrada por el usuario
+     * Usa SHA-256
+     *
+     * @param password String con la contraseña.
+     * @return byte Array con el hash correspondiente
+     */
     private byte[] HashPassword(String password) {
         byte[] hashed = null;
         try {
@@ -262,60 +274,60 @@ public class V_Register {
         return panelPrincipal;
     }
 
-    public static void main(String[] args) {
-        try {
-            // Set System L&F
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
-        JFrame frame = new JFrame("Inicio - Gestion Campeonato");
-        frame.setContentPane(new V_Register(frame).panelPrincipal);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        int x = (screenSize.width - frame.getWidth()) / 2;
-        int y = (screenSize.height - frame.getHeight()) / 2;
-        frame.setLocation(x, y);
-        if (DockerLauncher()) System.out.println("Docker Launcher exitoso");
-        else System.out.println("Problemas con el Docker");
-    }
-
-    private static boolean DockerLauncher() {
-        boolean result = false;
-        String composeFilePath = ".\\Lanzadera\\docker-compose.yml";
-        String[] command = {"docker-compose", "-f", composeFilePath, "up", "-d"};
-
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("Docker Compose se ejecutó correctamente.");
-                result = true;
-            } else {
-                System.err.println("Error al ejecutar Docker Compose. Código de salida: " + exitCode);
-            }
-        } catch (IOException | InterruptedException e) {
-            System.out.println("Error al ejecutar Docker Compose");
-        }
-        return result;
-
-    }
+//    public static void main(String[] args) {
+//        try {
+//            // Set System L&F
+//            UIManager.setLookAndFeel(
+//                    UIManager.getSystemLookAndFeelClassName());
+//        } catch (UnsupportedLookAndFeelException e) {
+//            // handle exception
+//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        JFrame frame = new JFrame("Inicio - Gestion Campeonato");
+//        frame.setContentPane(new V_Register(frame).panelPrincipal);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+//        frame.setVisible(true);
+//        Toolkit toolkit = Toolkit.getDefaultToolkit();
+//        Dimension screenSize = toolkit.getScreenSize();
+//        int x = (screenSize.width - frame.getWidth()) / 2;
+//        int y = (screenSize.height - frame.getHeight()) / 2;
+//        frame.setLocation(x, y);
+//        if (DockerLauncher()) System.out.println("Docker Launcher exitoso");
+//        else System.out.println("Problemas con el Docker");
+//    }
+//
+//    private static boolean DockerLauncher() {
+//        boolean result = false;
+//        String composeFilePath = ".\\Lanzadera\\docker-compose.yml";
+//        String[] command = {"docker-compose", "-f", composeFilePath, "up", "-d"};
+//
+//        try {
+//            ProcessBuilder processBuilder = new ProcessBuilder(command);
+//            processBuilder.redirectErrorStream(true);
+//            Process process = processBuilder.start();
+//
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//
+//            int exitCode = process.waitFor();
+//            if (exitCode == 0) {
+//                System.out.println("Docker Compose se ejecutó correctamente.");
+//                result = true;
+//            } else {
+//                System.err.println("Error al ejecutar Docker Compose. Código de salida: " + exitCode);
+//            }
+//        } catch (IOException | InterruptedException e) {
+//            System.out.println("Error al ejecutar Docker Compose");
+//        }
+//        return result;
+//
+//    }
 
 
 }
