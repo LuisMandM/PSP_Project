@@ -104,9 +104,9 @@ public class V_Incidencia {
         enviarButton.addActionListener(e -> {
             Incidencia current = new Incidencia();
             current.setUsuario(usuario);
-            current.setDescripcion(descTxtArea.getText());
             Area area = (Area) AreaCbox.getSelectedItem();
-            if (area != null) {
+            if (area != null && !descTxtArea.getText().isEmpty()) {
+                current.setDescripcion(descTxtArea.getText());
                 current.setArea(area);
                 current.setEstado(Estado.AREA);
 
@@ -122,6 +122,7 @@ public class V_Incidencia {
                                         gestion.getNivel().toString(), (gestion.getTiempo() / (60 * 60 * 1000)));
                                 JOptionPane.showMessageDialog(panelPrincipal, mensaje, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                                 LoadIncidencias();
+                                LimpiarCampos();
                             }
 
                         } catch (SQLException ex) {
@@ -133,9 +134,15 @@ public class V_Incidencia {
                             """, "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
-            }
+            }else JOptionPane.showMessageDialog(panelPrincipal, """
+                            Para abrir una incidencia debe marcarse un tipo y dejar una descripción
+                            """, "Error", JOptionPane.ERROR_MESSAGE);
 
         });
+        limpiarButton.addActionListener(e -> {
+            LimpiarCampos();
+        });
+
         verIncidenciaButton.addActionListener(e -> {
             if (incidenciasTable.getRowCount() > 0 && incidenciasTable.getSelectedRow() >= 0) {
                 Incidencia current = incidencias.get(incidenciasTable.getSelectedRow());
@@ -184,6 +191,11 @@ public class V_Incidencia {
         }
 
         return !incidencias.isEmpty();
+    }
+
+    private void LimpiarCampos() {
+        AreaCbox.setSelectedItem(null);
+        descTxtArea.setText("");
     }
 
     public JPanel getPanelPrincipal() {
