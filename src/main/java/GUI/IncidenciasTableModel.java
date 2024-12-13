@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
 public class IncidenciasTableModel extends AbstractTableModel {
-    private String[] columns = {"Codigo", "Area Encargada", "Tiempo Respuesta"};
+    private String[] columns = {"Codigo", "Tipo Petición", "Respuesta(Horas)"};
     private ArrayList<Incidencia> incidencias;
 
     public IncidenciasTableModel(ArrayList<Incidencia> incidencias) {
