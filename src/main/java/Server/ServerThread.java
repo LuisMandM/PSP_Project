@@ -50,7 +50,6 @@ public class ServerThread extends Thread {
      * Procesa la gestión de las incidencia enviadas, hace uso de un clave simetrica enviada por el lado del cliente
      * para la desencriptacion del byte array que contiene la instancia de Incidencia.
      * retorna la Incidencia gestionada.
-     *
      */
     @Override
     public void run() {
@@ -84,11 +83,15 @@ public class ServerThread extends Thread {
                             byte[] hashed = messageDigest.digest();
                             if (Arrays.equals(hashed, contrasenia)) {
                                 salida.writeObject(true);
+                                //System.out.println("Proceso de validacion Contraseña finalizado");
                             } else salida.writeObject(false);
+                            System.out.println("Proceso de validacion Contraseña finalizado");
                         } catch (NoSuchAlgorithmException e) {
                             System.out.println("Error en la codificacion de la contraseña: " + e.getMessage());
                             salida.writeObject(false);
                         }
+
+                        break;
                     case 200:
                         byte[] AESCrypted = (byte[]) entrada.readObject();
                         byte[] AES = descifrarConClavePrivada(AESCrypted, keys.getPrivate());
@@ -112,7 +115,7 @@ public class ServerThread extends Thread {
 
                         } else salida.writeObject(false);
 
-
+                        break;
                     default:
                         break;
                 }
