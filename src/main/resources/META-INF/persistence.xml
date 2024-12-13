@@ -9,11 +9,14 @@
                       value="jdbc:mysql://localhost:33060/PSP_proyecto"/>
             <property name="hibernate.connection.driver_class"
                       value="com.mysql.cj.jdbc.Driver"/>
-            <property name="hibernate.connection.password" value="12345Abcde"/>
             <property name="hibernate.connection.username" value="root"/>
+            <property name="hibernate.connection.password" value="12345Abcde"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hikari.maximumPoolSize" value="10"/>
+            <property name="hibernate.hikari.minimumIdle" value="2"/>
+
         </properties>
     </persistence-unit>
 </persistence>
