@@ -1,5 +1,6 @@
 package dao;
 
+import Models.Estado;
 import Models.Incidencia;
 import iDAO.IIncidenciaDao;
 import jakarta.persistence.Query;
@@ -27,6 +28,30 @@ public class IncidenciaDaoImpl extends Dao<Incidencia, String> implements IIncid
             Manejador.getInstance().getEm().getTransaction().begin();
             query = Manejador.getInstance().getEm().createQuery(HQL_COD);
             query.setParameter("user", user);
+            List resultado = query.getResultList();
+            if (resultado != null) {
+                incidencias = (ArrayList<Incidencia>) resultado;
+            }
+            Manejador.getInstance().getEm().getTransaction().commit();
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener el resultado: " + e.getMessage());
+        }
+
+        return incidencias;
+    }
+
+    @Override
+    public List<Incidencia> getByArea(Long user) {
+        ArrayList<Incidencia> incidencias = new ArrayList<Incidencia>();
+        String HQL_COD = "From Incidencia as Inc where Inc.area.id = :user and Inc.estado = :estado";
+        Query query = null;
+
+        try {
+            Manejador.getInstance().getEm().getTransaction().begin();
+            query = Manejador.getInstance().getEm().createQuery(HQL_COD);
+            query.setParameter("user", user);
+            query.setParameter("estado", Estado.AREA);
             List resultado = query.getResultList();
             if (resultado != null) {
                 incidencias = (ArrayList<Incidencia>) resultado;

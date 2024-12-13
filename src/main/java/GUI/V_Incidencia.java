@@ -35,12 +35,13 @@ public class V_Incidencia {
     private JTextField estadoView;
     private JButton verIncidenciaButton;
     private JScrollPane incidenciasScrollp;
-    private JTextField textField1;
+    private JTextField messageTxtFld;
     private JButton contestarButton;
     private JScrollPane mensajesScrollP;
     private JTextField timeView;
     private JPanel DetailPanel;
     private JPanel MensajesPanel;
+    private JTextArea messageTextArea;
     private JTable incidenciasTable;
 
     private Usuario usuario;
@@ -56,7 +57,7 @@ public class V_Incidencia {
         MensajesPanel.setVisible(false);
         descTxtArea.setLineWrap(true);
         descTxtArea.setWrapStyleWord(true);
-        frame.pack();
+        //frame.pack();
 
         tabbedPane1.addChangeListener(new ChangeListener() {
 
@@ -134,9 +135,9 @@ public class V_Incidencia {
                             """, "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
-            }else JOptionPane.showMessageDialog(panelPrincipal, """
-                            Para abrir una incidencia debe marcarse un tipo y dejar una descripción
-                            """, "Error", JOptionPane.ERROR_MESSAGE);
+            } else JOptionPane.showMessageDialog(panelPrincipal, """
+                    Para abrir una incidencia debe marcarse un tipo y dejar una descripción
+                    """, "Error", JOptionPane.ERROR_MESSAGE);
 
         });
         limpiarButton.addActionListener(e -> {
@@ -160,6 +161,14 @@ public class V_Incidencia {
                 descView.setEditable(false);
                 timeView.setEditable(false);
                 estadoView.setEditable(false);
+
+                if (current.getEstado() == Estado.CERRADO) {
+                    String mensaje = new String(current.getMensajes());
+                    messageTextArea.setText(mensaje);
+                    messageTextArea.setLineWrap(true);
+                    MensajesPanel.setVisible(true);
+                }
+
 
                 descView.setLineWrap(true);
                 descView.setWrapStyleWord(true);
